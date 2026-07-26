@@ -33,7 +33,7 @@ export const BENEFITS: Benefit[] = [
     icon: BadgePercent,
     title: "Keep every sale",
     description:
-      "No commissions, no per-order fees. OrderFlow is a flat subscription — what you sell is what you keep.",
+      "No commissions, no per-order fees. Cart-2-Chat is a flat subscription — what you sell is what you keep.",
   },
   {
     icon: MessageCircle,
@@ -168,9 +168,10 @@ export const PRICING_TIERS: PricingTier[] = [
     href: "/signup",
     features: [
       "Up to 20 products",
-      "Up to 3 categories",
+      "Unlimited categories",
       "Cart & WhatsApp checkout",
-      "Basic analytics",
+      "Full analytics dashboard",
+      "Custom logo & banner",
       "Community support",
     ],
   },
@@ -218,7 +219,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Ada",
     role: "Boutique clothing store",
     quote:
-      "My customers already lived on WhatsApp. OrderFlow just gave them a proper menu to browse before they message me.",
+      "My customers already lived on WhatsApp. Cart-2-Chat just gave them a proper menu to browse before they message me.",
   },
   {
     name: "Kwame",
@@ -261,12 +262,12 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Do I need a website already?",
     answer:
-      "No. OrderFlow gives you a complete public storefront out of the box — your own link to share anywhere.",
+      "No. Cart-2-Chat gives you a complete public storefront out of the box — your own link to share anywhere.",
   },
   {
-    question: "Does OrderFlow take a commission on my sales?",
+    question: "Does Cart-2-Chat take a commission on my sales?",
     answer:
-      "No. OrderFlow is a flat subscription. We never take a percentage of what you sell.",
+      "No. Cart-2-Chat is a flat subscription. We never take a percentage of what you sell.",
   },
   {
     question: "Can customers pay online?",

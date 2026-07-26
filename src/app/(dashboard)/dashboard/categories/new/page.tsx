@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getOwnBusiness } from "@/features/business/lib/queries";
-import { CategoryForm } from "@/features/categories/components/category-form";
+import { CategoryCreateFlow } from "@/features/categories/components/category-create-flow";
 import { UpgradeBanner } from "@/features/subscription/components/upgrade-banner";
 import { getBillingOverview } from "@/features/subscription/lib/queries";
 
@@ -30,8 +23,7 @@ export default async function NewCategoryPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">New category</h1>
         <p className="text-muted-foreground text-sm">
-          Add a category to organize your products. You can add an image after
-          saving.
+          Add a category to organize your products, image included.
         </p>
       </div>
 
@@ -42,17 +34,7 @@ export default async function NewCategoryPage() {
           />
         </div>
       ) : (
-        <Card className="lg:max-w-xl">
-          <CardHeader>
-            <CardTitle className="text-base">Category details</CardTitle>
-            <CardDescription>
-              You can rename or hide this category later.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CategoryForm businessId={business.id} />
-          </CardContent>
-        </Card>
+        <CategoryCreateFlow businessId={business.id} />
       )}
     </div>
   );

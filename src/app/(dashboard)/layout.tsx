@@ -11,7 +11,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { siteConfig } from "@/config/site";
 import { getOwnBusiness } from "@/features/business/lib/queries";
+import { StorefrontLinkButton } from "@/features/business/components/storefront-link-button";
 import { createClient } from "@/lib/supabase/server";
 
 // Belt-and-suspenders on top of the robots.txt disallow: robots.txt only
@@ -54,7 +56,12 @@ export default async function DashboardLayout({
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <DashboardBreadcrumb />
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ml-auto flex items-center gap-2">
+            {business && (
+              <StorefrontLinkButton
+                storeUrl={`${siteConfig.url}/store/${business.slug}`}
+              />
+            )}
             <ModeToggle />
           </div>
         </header>

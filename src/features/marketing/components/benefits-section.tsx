@@ -6,7 +6,7 @@ export function BenefitsSection() {
   return (
     <section id="benefits" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <SectionHeading
-        eyebrow="Why OrderFlow"
+        eyebrow="Why Cart-2-Chat"
         title="Built for how you already sell"
         description="You don't need a full e-commerce platform. You need a storefront that sends orders exactly where you already are."
       />

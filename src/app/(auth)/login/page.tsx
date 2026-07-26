@@ -22,7 +22,7 @@ export default async function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Log in to OrderFlow</CardTitle>
+        <CardTitle className="text-xl">Log in to Cart-2-Chat</CardTitle>
         <CardDescription>
           Enter your email and password to access your dashboard.
         </CardDescription>

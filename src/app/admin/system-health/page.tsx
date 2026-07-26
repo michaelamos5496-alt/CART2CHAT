@@ -46,7 +46,7 @@ export default async function AdminSystemHealthPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">System health</h1>
         <p className="text-muted-foreground text-sm">
-          Live checks against every service OrderFlow depends on.
+          Live checks against every service Cart-2-Chat depends on.
         </p>
       </div>
 

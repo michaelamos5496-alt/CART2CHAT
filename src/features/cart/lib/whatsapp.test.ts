@@ -31,7 +31,7 @@ const TEMPLATE =
 describe("buildWhatsAppMessage", () => {
   it("substitutes every template placeholder", () => {
     const message = buildWhatsAppMessage(TEMPLATE, {
-      businessName: "OrderFlow Test Store",
+      businessName: "Cart-2-Chat Test Store",
       orderNumber: 42,
       customerName: "Ada Lovelace",
       customerPhone: "+15551234567",

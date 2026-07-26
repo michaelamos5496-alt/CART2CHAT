@@ -1,15 +1,8 @@
 import type { Metadata } from "next";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getCategories } from "@/features/categories/lib/queries";
 import { getOwnBusiness } from "@/features/business/lib/queries";
-import { ProductForm } from "@/features/products/components/product-form";
+import { ProductCreateFlow } from "@/features/products/components/product-create-flow";
 import { UpgradeBanner } from "@/features/subscription/components/upgrade-banner";
 import { getBillingOverview } from "@/features/subscription/lib/queries";
 
@@ -35,7 +28,7 @@ export default async function NewProductPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">New product</h1>
         <p className="text-muted-foreground text-sm">
-          Add a product to your catalog. You can add photos after saving.
+          Add a product to your catalog, photos included.
         </p>
       </div>
 
@@ -46,17 +39,7 @@ export default async function NewProductPage() {
           />
         </div>
       ) : (
-        <Card className="lg:max-w-2xl">
-          <CardHeader>
-            <CardTitle className="text-base">Product details</CardTitle>
-            <CardDescription>
-              Required to list this product on your storefront.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProductForm businessId={business.id} categories={categories} />
-          </CardContent>
-        </Card>
+        <ProductCreateFlow businessId={business.id} categories={categories} />
       )}
     </div>
   );

@@ -51,10 +51,15 @@ export function ProductForm({
   businessId,
   categories,
   product,
+  onCreated,
 }: {
   businessId: string;
   categories: Category[];
   product?: Product;
+  // When provided (the "new product" flow), takes over from the default
+  // post-create redirect so the caller can reveal the image manager inline
+  // on the same page instead of navigating to /edit.
+  onCreated?: (product: { id: string }) => void;
 }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -85,7 +90,11 @@ export function ProductForm({
       } else {
         const created = await createProduct(businessId, values);
         toast.success("Product created");
-        router.push(`/dashboard/products/${created.id}/edit`);
+        if (onCreated) {
+          onCreated(created);
+        } else {
+          router.push(`/dashboard/products/${created.id}/edit`);
+        }
         router.refresh();
       }
     } catch (error) {

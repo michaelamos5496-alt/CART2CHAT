@@ -40,7 +40,7 @@ export default async function AdminOverviewPage() {
           Platform overview
         </h1>
         <p className="text-muted-foreground text-sm">
-          How OrderFlow is doing across every business.
+          How Cart-2-Chat is doing across every business.
         </p>
       </div>
 

@@ -30,9 +30,14 @@ import type { Category } from "@/types/catalog";
 export function CategoryForm({
   businessId,
   category,
+  onCreated,
 }: {
   businessId: string;
   category?: Category;
+  // When provided (the "new category" flow), takes over from the default
+  // post-create redirect so the caller can reveal the image upload inline
+  // on the same page instead of navigating to /edit.
+  onCreated?: (category: { id: string }) => void;
 }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -58,7 +63,11 @@ export function CategoryForm({
       } else {
         const created = await createCategory(businessId, values);
         toast.success("Category created");
-        router.push(`/dashboard/categories/${created.id}/edit`);
+        if (onCreated) {
+          onCreated(created);
+        } else {
+          router.push(`/dashboard/categories/${created.id}/edit`);
+        }
         router.refresh();
       }
     } catch (error) {

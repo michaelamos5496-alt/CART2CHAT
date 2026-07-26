@@ -27,7 +27,7 @@ export default async function SignupPage() {
         <CardHeader>
           <CardTitle className="text-xl">Signups are paused</CardTitle>
           <CardDescription>
-            OrderFlow isn&apos;t accepting new businesses right now. Please
+            Cart-2-Chat isn&apos;t accepting new businesses right now. Please
             check back soon.
           </CardDescription>
         </CardHeader>
@@ -48,7 +48,7 @@ export default async function SignupPage() {
       <CardHeader>
         <CardTitle className="text-xl">Create your account</CardTitle>
         <CardDescription>
-          Set up your business storefront on OrderFlow.
+          Set up your business storefront on Cart-2-Chat.
         </CardDescription>
       </CardHeader>
       <CardContent>
