@@ -5,6 +5,8 @@ import type {
   Category,
   Product,
   ProductImage,
+  ProductOptionValue,
+  ProductOptionWithValues,
   StorefrontProduct,
   StorefrontProductDetail,
 } from "@/types/catalog";
@@ -47,6 +49,7 @@ export async function getStorefrontCategories(
 
 type ProductRow = Product & {
   product_images: Pick<ProductImage, "storage_path" | "sort_order">[] | null;
+  product_options: { count: number }[];
 };
 
 function primaryImagePath(
@@ -58,9 +61,10 @@ function primaryImagePath(
 }
 
 function toStorefrontProducts(rows: ProductRow[] | null): StorefrontProduct[] {
-  return (rows ?? []).map(({ product_images, ...product }) => ({
+  return (rows ?? []).map(({ product_images, product_options, ...product }) => ({
     ...product,
     primaryImagePath: primaryImagePath(product_images),
+    hasOptions: (product_options?.[0]?.count ?? 0) > 0,
   }));
 }
 
@@ -72,7 +76,9 @@ export async function getStorefrontProducts(
 
   let query = supabase
     .from("products")
-    .select("*, product_images(storage_path, sort_order)")
+    .select(
+      "*, product_images(storage_path, sort_order), product_options(count)",
+    )
     .eq("business_id", businessId);
 
   if (search) {
@@ -95,7 +101,9 @@ export async function getFeaturedProducts(
 
   const { data } = await supabase
     .from("products")
-    .select("*, product_images(storage_path, sort_order)")
+    .select(
+      "*, product_images(storage_path, sort_order), product_options(count)",
+    )
     .eq("business_id", businessId)
     .eq("is_featured", true)
     .order("sort_order", { ascending: true })
@@ -112,21 +120,30 @@ export async function getStorefrontProduct(
 
   const { data } = await supabase
     .from("products")
-    .select("*, category:categories(name, slug), images:product_images(*)")
+    .select(
+      "*, category:categories(name, slug), images:product_images(*), options:product_options(*, values:product_option_values(*))",
+    )
     .eq("business_id", businessId)
     .eq("slug", productSlug)
     .maybeSingle();
 
   if (!data) return null;
 
-  const { images, ...product } = data as Product & {
+  const { images, options, ...product } = data as Product & {
     category: Pick<Category, "name" | "slug"> | null;
     images: ProductImage[];
+    options: (ProductOptionWithValues & { values: ProductOptionValue[] })[];
   };
 
   return {
     ...product,
     images: [...images].sort((a, b) => a.sort_order - b.sort_order),
+    options: [...options]
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((option) => ({
+        ...option,
+        values: [...option.values].sort((a, b) => a.sort_order - b.sort_order),
+      })),
   };
 }
 

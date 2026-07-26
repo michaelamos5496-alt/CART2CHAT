@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { BUSINESS_CATEGORIES } from "@/types/business";
+
 export const CURRENCIES = [
   "USD",
   "EUR",
@@ -72,6 +74,7 @@ export const storeSettingsSchema = z.object({
     .trim()
     .regex(/^#[0-9A-Fa-f]{6}$/, "Enter a valid hex color, e.g. #16A34A"),
   currency: z.enum(CURRENCIES),
+  category: z.enum(BUSINESS_CATEGORIES),
   deliveryFee: z
     .number()
     .min(0, "Delivery fee must be 0 or more")

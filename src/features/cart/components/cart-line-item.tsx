@@ -31,10 +31,21 @@ export function CartLineItem({ item }: { item: CartItem }) {
 
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div className="flex items-start justify-between gap-2">
-          <span className="truncate text-sm font-medium">{item.name}</span>
+          <div className="min-w-0">
+            <span className="block truncate text-sm font-medium">
+              {item.name}
+            </span>
+            {item.selectedOptions.length > 0 && (
+              <span className="text-muted-foreground block truncate text-xs">
+                {item.selectedOptions
+                  .map((option) => `${option.name}: ${option.value}`)
+                  .join(", ")}
+              </span>
+            )}
+          </div>
           <button
             type="button"
-            onClick={() => removeItem(item.productId)}
+            onClick={() => removeItem(item.cartItemKey)}
             className="text-muted-foreground hover:text-destructive flex size-7 shrink-0 items-center justify-center"
             aria-label={`Remove ${item.name}`}
           >
@@ -46,7 +57,7 @@ export function CartLineItem({ item }: { item: CartItem }) {
           <div className="border-input flex items-center gap-2 rounded-md border">
             <button
               type="button"
-              onClick={() => decrement(item.productId)}
+              onClick={() => decrement(item.cartItemKey)}
               disabled={item.quantity <= 1}
               className="hover:bg-muted flex size-7 items-center justify-center rounded-l-md disabled:opacity-40"
               aria-label="Decrease quantity"
@@ -58,7 +69,7 @@ export function CartLineItem({ item }: { item: CartItem }) {
             </span>
             <button
               type="button"
-              onClick={() => increment(item.productId)}
+              onClick={() => increment(item.cartItemKey)}
               className="hover:bg-muted flex size-7 items-center justify-center rounded-r-md"
               aria-label="Increase quantity"
             >

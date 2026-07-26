@@ -113,6 +113,13 @@ export default async function OrderDetailPage({
                       <TableRow key={item.id}>
                         <TableCell className="font-medium">
                           {item.product_name}
+                          {item.selected_options.length > 0 && (
+                            <div className="text-muted-foreground mt-0.5 text-xs font-normal">
+                              {item.selected_options
+                                .map((o) => `${o.name}: ${o.value}`)
+                                .join(", ")}
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           {item.quantity}

@@ -33,6 +33,7 @@ export interface OrderItem {
   unit_price: number;
   quantity: number;
   subtotal: number;
+  selected_options: { name: string; value: string }[];
   created_at: string;
 }
 

@@ -1,10 +1,18 @@
 import { formatCurrency } from "@/lib/format";
 import type { CartItem } from "@/types/cart";
 
-// "• Product A x2" per line, matching the requested message format —
-// deliberately no per-item price, just name and quantity.
+// "• Product A (Size: M, Color: Blue) x2" per line — deliberately no
+// per-item price, just name, chosen options (if any), and quantity.
 function formatItemsList(items: CartItem[]): string {
-  return items.map((item) => `• ${item.name} x${item.quantity}`).join("\n");
+  return items
+    .map((item) => {
+      const options = item.selectedOptions
+        .map((option) => `${option.name}: ${option.value}`)
+        .join(", ");
+      const optionsSuffix = options ? ` (${options})` : "";
+      return `• ${item.name}${optionsSuffix} x${item.quantity}`;
+    })
+    .join("\n");
 }
 
 export function buildWhatsAppMessage(

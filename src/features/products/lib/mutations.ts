@@ -1,7 +1,11 @@
 import { compressImage } from "@/lib/image";
 import { createClient } from "@/lib/supabase/client";
 import type { ProductInput } from "@/lib/validations/product";
-import type { ProductImage } from "@/types/catalog";
+import type {
+  ProductImage,
+  ProductOption,
+  ProductOptionValue,
+} from "@/types/catalog";
 
 const STORAGE_BUCKET = "product-images";
 
@@ -151,4 +155,82 @@ export function getProductImageUrl(storagePath: string) {
   const supabase = createClient();
   return supabase.storage.from(STORAGE_BUCKET).getPublicUrl(storagePath).data
     .publicUrl;
+}
+
+// Product options (e.g. "Size", "Color") — a generic per-product custom
+// field, not tied to any fixed list, so any kind of shop can add whatever
+// options fit their own catalog.
+
+export async function createProductOption(
+  businessId: string,
+  productId: string,
+  name: string,
+  sortOrder: number,
+): Promise<ProductOption> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("product_options")
+    .insert({
+      product_id: productId,
+      business_id: businessId,
+      name,
+      sort_order: sortOrder,
+    })
+    .select("*")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Failed to add option");
+  }
+
+  return data as ProductOption;
+}
+
+export async function deleteProductOption(optionId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("product_options")
+    .delete()
+    .eq("id", optionId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function createProductOptionValue(
+  optionId: string,
+  businessId: string,
+  value: string,
+  sortOrder: number,
+): Promise<ProductOptionValue> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("product_option_values")
+    .insert({
+      option_id: optionId,
+      business_id: businessId,
+      value,
+      sort_order: sortOrder,
+    })
+    .select("*")
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message ?? "Failed to add value");
+  }
+
+  return data as ProductOptionValue;
+}
+
+export async function deleteProductOptionValue(valueId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("product_option_values")
+    .delete()
+    .eq("id", valueId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }

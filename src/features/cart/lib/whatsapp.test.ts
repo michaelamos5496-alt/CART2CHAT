@@ -8,20 +8,24 @@ import type { CartItem } from "@/types/cart";
 
 const items: CartItem[] = [
   {
+    cartItemKey: "p1",
     productId: "p1",
     name: "Widget",
     slug: "widget",
     price: 10,
     quantity: 2,
     imagePath: null,
+    selectedOptions: [],
   },
   {
+    cartItemKey: "p2::Color=Blue",
     productId: "p2",
     name: "Gadget",
     slug: "gadget",
     price: 5,
     quantity: 1,
     imagePath: null,
+    selectedOptions: [{ name: "Color", value: "Blue" }],
   },
 ];
 
@@ -46,7 +50,7 @@ describe("buildWhatsAppMessage", () => {
 
     expect(message).toContain("Ada Lovelace");
     expect(message).toContain("• Widget x2");
-    expect(message).toContain("• Gadget x1");
+    expect(message).toContain("• Gadget (Color: Blue) x1");
     expect(message).toContain("123 Main St");
     expect(message).toContain("Ring the bell");
     expect(message).not.toContain("{{");

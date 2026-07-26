@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   Product,
   ProductImage,
+  ProductOptionValue,
+  ProductOptionWithValues,
   ProductWithCategory,
 } from "@/types/catalog";
 
@@ -65,6 +67,27 @@ export async function getProductWithImages(
     product: productResult.data as Product,
     images: (imagesResult.data as ProductImage[] | null) ?? [],
   };
+}
+
+export async function getProductOptions(
+  productId: string,
+): Promise<ProductOptionWithValues[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("product_options")
+    .select("*, values:product_option_values(*)")
+    .eq("product_id", productId)
+    .order("sort_order", { ascending: true });
+
+  const rows =
+    (data as (ProductOptionWithValues & { values: ProductOptionValue[] })[] | null) ??
+    [];
+
+  return rows.map((option) => ({
+    ...option,
+    values: [...option.values].sort((a, b) => a.sort_order - b.sort_order),
+  }));
 }
 
 export interface PopularProduct {

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import type { CheckoutInput } from "@/lib/validations/cart";
 import type { CartItem, PlaceOrderResult } from "@/types/cart";
+import type { Json } from "@/types/database";
 
 export async function placeOrder(
   businessId: string,
@@ -18,6 +19,10 @@ export async function placeOrder(
     p_items: items.map((item) => ({
       product_id: item.productId,
       quantity: item.quantity,
+      // SelectedOption[] is structurally JSON-safe (just string fields),
+      // but TS's generated Json type requires an index signature that a
+      // plain interface doesn't structurally provide.
+      selected_options: item.selectedOptions as unknown as Json,
     })),
   });
 

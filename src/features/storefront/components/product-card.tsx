@@ -67,7 +67,11 @@ export function ProductCard({
             </Badge>
           </div>
         )}
-        {product.is_available && (
+        {/* Products with options (e.g. Size, Color) skip the quick-add
+            shortcut — the customer needs to pick a value for each option
+            on the product page, which a one-tap add from the grid can't
+            offer. The card link itself still takes them there. */}
+        {product.is_available && !product.hasOptions && (
           <button
             type="button"
             onClick={handleQuickAdd}

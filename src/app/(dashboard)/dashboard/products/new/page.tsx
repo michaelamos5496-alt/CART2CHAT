@@ -39,7 +39,11 @@ export default async function NewProductPage() {
           />
         </div>
       ) : (
-        <ProductCreateFlow businessId={business.id} categories={categories} />
+        <ProductCreateFlow
+          businessId={business.id}
+          businessCategory={business.category}
+          categories={categories}
+        />
       )}
     </div>
   );

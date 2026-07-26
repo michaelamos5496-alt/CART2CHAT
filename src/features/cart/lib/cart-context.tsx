@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import type { CartItem } from "@/types/cart";
+import type { CartItem, SelectedOption } from "@/types/cart";
 
 interface CartBusinessContext {
   businessId: string;
@@ -14,13 +14,32 @@ interface CartBusinessContext {
   whatsappMessageTemplate: string;
 }
 
+// Two lines are the "same" cart item only if both the product AND every
+// selected option match — Size M and Size L of the same product are
+// different lines. Order-independent (sorted by name) so selecting
+// Color-then-Size vs Size-then-Color still dedupes correctly.
+function buildCartItemKey(
+  productId: string,
+  selectedOptions: SelectedOption[],
+): string {
+  if (selectedOptions.length === 0) return productId;
+  const sorted = [...selectedOptions].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+  return `${productId}::${sorted.map((o) => `${o.name}=${o.value}`).join("|")}`;
+}
+
+type NewCartItem = Omit<CartItem, "cartItemKey" | "quantity" | "selectedOptions"> & {
+  selectedOptions?: SelectedOption[];
+};
+
 interface CartContextValue extends CartBusinessContext {
   items: CartItem[];
   isHydrated: boolean;
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  increment: (productId: string) => void;
-  decrement: (productId: string) => void;
+  addItem: (item: NewCartItem, quantity?: number) => void;
+  removeItem: (cartItemKey: string) => void;
+  increment: (cartItemKey: string) => void;
+  decrement: (cartItemKey: string) => void;
   clear: () => void;
   subtotal: number;
   total: number;
@@ -61,38 +80,41 @@ export function CartProvider({
   }, [items, isHydrated, storageKey]);
 
   const addItem = React.useCallback(
-    (item: Omit<CartItem, "quantity">, quantity = 1) => {
+    (item: NewCartItem, quantity = 1) => {
+      const selectedOptions = item.selectedOptions ?? [];
+      const cartItemKey = buildCartItemKey(item.productId, selectedOptions);
+
       setItems((prev) => {
-        const existing = prev.find((i) => i.productId === item.productId);
+        const existing = prev.find((i) => i.cartItemKey === cartItemKey);
         if (existing) {
           return prev.map((i) =>
-            i.productId === item.productId
+            i.cartItemKey === cartItemKey
               ? { ...i, quantity: i.quantity + quantity }
               : i,
           );
         }
-        return [...prev, { ...item, quantity }];
+        return [...prev, { ...item, selectedOptions, cartItemKey, quantity }];
       });
     },
     [],
   );
 
-  const removeItem = React.useCallback((productId: string) => {
-    setItems((prev) => prev.filter((i) => i.productId !== productId));
+  const removeItem = React.useCallback((cartItemKey: string) => {
+    setItems((prev) => prev.filter((i) => i.cartItemKey !== cartItemKey));
   }, []);
 
-  const increment = React.useCallback((productId: string) => {
+  const increment = React.useCallback((cartItemKey: string) => {
     setItems((prev) =>
       prev.map((i) =>
-        i.productId === productId ? { ...i, quantity: i.quantity + 1 } : i,
+        i.cartItemKey === cartItemKey ? { ...i, quantity: i.quantity + 1 } : i,
       ),
     );
   }, []);
 
-  const decrement = React.useCallback((productId: string) => {
+  const decrement = React.useCallback((cartItemKey: string) => {
     setItems((prev) =>
       prev.map((i) =>
-        i.productId === productId
+        i.cartItemKey === cartItemKey
           ? { ...i, quantity: Math.max(1, i.quantity - 1) }
           : i,
       ),

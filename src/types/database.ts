@@ -64,6 +64,7 @@ export interface Database {
           banner_path: string | null;
           theme_color: string;
           currency: string;
+          category: Database["public"]["Enums"]["business_category"];
           is_active: boolean;
           is_suspended: boolean;
           suspended_at: string | null;
@@ -82,6 +83,7 @@ export interface Database {
           banner_path?: string | null;
           theme_color?: string;
           currency?: string;
+          category?: Database["public"]["Enums"]["business_category"];
           is_active?: boolean;
           is_suspended?: boolean;
           suspended_at?: string | null;
@@ -100,6 +102,7 @@ export interface Database {
           banner_path?: string | null;
           theme_color?: string;
           currency?: string;
+          category?: Database["public"]["Enums"]["business_category"];
           is_active?: boolean;
           is_suspended?: boolean;
           suspended_at?: string | null;
@@ -281,6 +284,76 @@ export interface Database {
           },
         ];
       };
+      product_options: {
+        Row: {
+          id: string;
+          product_id: string;
+          business_id: string;
+          name: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          business_id: string;
+          name: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          business_id?: string;
+          name?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_options_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      product_option_values: {
+        Row: {
+          id: string;
+          option_id: string;
+          business_id: string;
+          value: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          option_id: string;
+          business_id: string;
+          value: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          option_id?: string;
+          business_id?: string;
+          value?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_option_values_option_id_fkey";
+            columns: ["option_id"];
+            isOneToOne: false;
+            referencedRelation: "product_options";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       orders: {
         Row: {
           id: string;
@@ -350,6 +423,7 @@ export interface Database {
           unit_price: number;
           quantity: number;
           subtotal: number;
+          selected_options: Json;
           created_at: string;
         };
         Insert: {
@@ -361,6 +435,7 @@ export interface Database {
           unit_price: number;
           quantity: number;
           subtotal?: number;
+          selected_options?: Json;
           created_at?: string;
         };
         Update: {
@@ -372,6 +447,7 @@ export interface Database {
           unit_price?: number;
           quantity?: number;
           subtotal?: number;
+          selected_options?: Json;
           created_at?: string;
         };
         Relationships: [];
@@ -578,6 +654,15 @@ export interface Database {
     };
     Enums: {
       product_status: "draft" | "active" | "archived";
+      business_category:
+        | "fashion_apparel"
+        | "food_beverage"
+        | "beauty_cosmetics"
+        | "electronics"
+        | "home_living"
+        | "jewelry_accessories"
+        | "health_wellness"
+        | "other";
     };
   };
 }

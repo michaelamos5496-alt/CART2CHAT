@@ -16,6 +16,7 @@ export async function updateStoreSettings(
         whatsapp_number: values.whatsappNumber,
         theme_color: values.themeColor,
         currency: values.currency,
+        category: values.category,
       })
       .eq("id", businessId),
     supabase

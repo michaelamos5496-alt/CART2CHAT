@@ -54,6 +54,10 @@ import {
   type StoreSettingsInput,
 } from "@/lib/validations/store-settings";
 import type { Business } from "@/types/business";
+import {
+  BUSINESS_CATEGORIES,
+  BUSINESS_CATEGORY_LABELS,
+} from "@/types/business";
 import type { BusinessSettings } from "@/types/business-settings";
 
 export function StoreSettingsForm({
@@ -79,6 +83,7 @@ export function StoreSettingsForm({
       whatsappNumber: business.whatsapp_number,
       themeColor: business.theme_color,
       currency: business.currency as StoreSettingsInput["currency"],
+      category: business.category,
       deliveryFee: settings?.delivery_fee ?? 0,
       businessHours: withDefaultHours(settings?.business_hours),
       socialLinks: {
@@ -304,6 +309,38 @@ export function StoreSettingsForm({
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Shop category</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isSubmitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {BUSINESS_CATEGORIES.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {BUSINESS_CATEGORY_LABELS[category]}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Used to tailor product option suggestions, like sizes
+                        for fashion or flavors for food.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

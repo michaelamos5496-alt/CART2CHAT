@@ -155,6 +155,7 @@ export default async function ProductDetailPage({
                 price={product.price}
                 imagePath={product.images[0]?.storage_path ?? null}
                 isAvailable={product.is_available}
+                options={product.options}
               />
             </div>
           </div>

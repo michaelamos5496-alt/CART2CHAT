@@ -17,10 +17,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AuthErrorAlert } from "@/features/auth/components/auth-error-alert";
 import { getAuthErrorMessage } from "@/features/auth/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
+import {
+  BUSINESS_CATEGORIES,
+  BUSINESS_CATEGORY_LABELS,
+} from "@/types/business";
 
 export function SignupForm() {
   const router = useRouter();
@@ -49,6 +60,7 @@ export function SignupForm() {
       options: {
         data: {
           business_name: values.businessName,
+          business_category: values.businessCategory,
           whatsapp_number: values.whatsappNumber,
         },
         emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
@@ -90,6 +102,38 @@ export function SignupForm() {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="businessCategory"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What kind of shop are you opening?</FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+                disabled={isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {BUSINESS_CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {BUSINESS_CATEGORY_LABELS[category]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                We&apos;ll tailor product options to match — like sizes and
+                colors for fashion, or flavors for food.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
