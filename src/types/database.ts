@@ -655,10 +655,6 @@ export interface Database {
         Args: Record<string, never>;
         Returns: undefined;
       };
-      delete_own_account: {
-        Args: Record<string, never>;
-        Returns: undefined;
-      };
     };
     Enums: {
       product_status: "draft" | "active" | "archived";
