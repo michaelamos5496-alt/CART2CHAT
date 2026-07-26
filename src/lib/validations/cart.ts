@@ -9,8 +9,14 @@ export const checkoutSchema = z.object({
   customerPhone: z
     .string()
     .trim()
-    .min(7, "Enter a valid phone number")
-    .max(20, "Enter a valid phone number"),
+    // Mirrors the DB check constraint on orders.customer_phone exactly
+    // (^\+?[0-9\s-]{7,20}$) — validating here means a bad phone number
+    // gets a normal inline form error instead of a raw Postgres
+    // "violates check constraint" message surfacing after submit.
+    .regex(
+      /^\+?[0-9\s-]{7,20}$/,
+      "Use only digits, spaces, and hyphens (e.g. +1 555-123-4567)",
+    ),
   customerAddress: z
     .string()
     .trim()
