@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { env } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -68,15 +69,30 @@ export async function deleteAccount(): Promise<{ error: string } | undefined> {
       }
     }
 
-    const { error } = await serviceClient.auth.admin.deleteUser(user.id);
-    if (error) {
-      console.error("deleteAccount: admin.deleteUser failed", {
-        name: error.name,
-        status: "status" in error ? error.status : undefined,
-        code: "code" in error ? error.code : undefined,
-        message: error.message,
+    // Calling the Admin API directly (instead of serviceClient.auth.admin.
+    // deleteUser) because the SDK discards the real response body for any
+    // 5xx status and substitutes a stringified Response object instead
+    // (always renders as "{}") — that's been masking the actual error.
+    const response = await fetch(
+      `${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${user.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY ?? ""}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const body = await response.text();
+      console.error("deleteAccount: admin delete failed", {
+        status: response.status,
+        body,
       });
-      return { error: error.message || "Failed to delete account" };
+      return {
+        error: body || `Delete failed with status ${response.status}`,
+      };
     }
   } catch (error) {
     console.error("deleteAccount: unexpected error", error);
