@@ -15,8 +15,22 @@ function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
 }
 
-function SheetClose({ ...props }: SheetPrimitive.Close.Props) {
-  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+function SheetClose({
+  render,
+  nativeButton = !render,
+  ...props
+}: SheetPrimitive.Close.Props) {
+  // Same nativeButton issue as Button (see components/ui/button.tsx) —
+  // SheetClose defaults to assuming its render target is a real <button>,
+  // which breaks when it's used to close the sheet via a nav <a> link.
+  return (
+    <SheetPrimitive.Close
+      data-slot="sheet-close"
+      render={render}
+      nativeButton={nativeButton}
+      {...props}
+    />
+  );
 }
 
 function SheetPortal({ ...props }: SheetPrimitive.Portal.Props) {

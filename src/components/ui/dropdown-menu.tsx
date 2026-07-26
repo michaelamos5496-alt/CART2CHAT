@@ -63,16 +63,21 @@ function DropdownMenuLabel({
 }: MenuPrimitive.GroupLabel.Props & {
   inset?: boolean;
 }) {
+  // Unlike Radix, base-ui's GroupLabel requires a Menu.Group ancestor for
+  // its context — wrapping it here means every call site gets a working
+  // label without having to remember to pair it with DropdownMenuGroup.
   return (
-    <MenuPrimitive.GroupLabel
-      data-slot="dropdown-menu-label"
-      data-inset={inset}
-      className={cn(
-        "text-muted-foreground px-1.5 py-1 text-xs font-medium data-inset:pl-7",
-        className,
-      )}
-      {...props}
-    />
+    <MenuPrimitive.Group>
+      <MenuPrimitive.GroupLabel
+        data-slot="dropdown-menu-label"
+        data-inset={inset}
+        className={cn(
+          "text-muted-foreground px-1.5 py-1 text-xs font-medium data-inset:pl-7",
+          className,
+        )}
+        {...props}
+      />
+    </MenuPrimitive.Group>
   );
 }
 
