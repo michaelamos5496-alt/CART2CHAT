@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { BUSINESS_CATEGORIES } from "@/types/business";
-
 const whatsappNumberSchema = z
   .string()
   .trim()
@@ -27,9 +25,6 @@ export const signupSchema = z
       .trim()
       .min(2, "Business name must be at least 2 characters")
       .max(120, "Business name is too long"),
-    businessCategory: z.enum(BUSINESS_CATEGORIES, {
-      message: "Choose what kind of shop you're opening",
-    }),
     whatsappNumber: whatsappNumberSchema,
     email: z.string().trim().email("Enter a valid email address"),
     password: passwordSchema,
