@@ -12,8 +12,7 @@ import { getCategories } from "@/features/categories/lib/queries";
 import { getOwnBusiness } from "@/features/business/lib/queries";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductImageManager } from "@/features/products/components/product-image-manager";
-import { ProductOptionsManager } from "@/features/products/components/product-options-manager";
-import { getProductOptions, getProductWithImages } from "@/features/products/lib/queries";
+import { getProductWithImages } from "@/features/products/lib/queries";
 
 export const metadata: Metadata = {
   title: "Edit product",
@@ -28,10 +27,9 @@ export default async function EditProductPage({
   const business = await getOwnBusiness();
   if (!business) return null;
 
-  const [result, categories, options] = await Promise.all([
+  const [result, categories] = await Promise.all([
     getProductWithImages(business.id, id),
     getCategories(business.id),
-    getProductOptions(id),
   ]);
 
   if (!result) {
@@ -60,24 +58,6 @@ export default async function EditProductPage({
               businessId={business.id}
               productId={product.id}
               initialImages={images}
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Options</CardTitle>
-            <CardDescription>
-              Sizes, colors, or anything else customers need to choose before
-              ordering.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProductOptionsManager
-              businessId={business.id}
-              productId={product.id}
-              initialOptions={options}
-              businessCategory={business.category}
             />
           </CardContent>
         </Card>

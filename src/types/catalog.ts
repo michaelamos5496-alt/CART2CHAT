@@ -46,35 +46,11 @@ export interface ProductImage {
   created_at: string;
 }
 
-export interface ProductOptionValue {
-  id: string;
-  option_id: string;
-  business_id: string;
-  value: string;
-  sort_order: number;
-  created_at: string;
-}
-
-export interface ProductOption {
-  id: string;
-  product_id: string;
-  business_id: string;
-  name: string;
-  sort_order: number;
-  created_at: string;
-}
-
-export interface ProductOptionWithValues extends ProductOption {
-  values: ProductOptionValue[];
-}
-
 export interface StorefrontProduct extends Product {
   primaryImagePath: string | null;
-  hasOptions: boolean;
 }
 
 export interface StorefrontProductDetail extends Product {
   category: Pick<Category, "name" | "slug"> | null;
   images: ProductImage[];
-  options: ProductOptionWithValues[];
 }
