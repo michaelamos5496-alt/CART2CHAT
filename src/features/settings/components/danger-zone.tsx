@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { unstable_rethrow, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -105,15 +105,12 @@ function DeleteAccountAction({ businessName }: { businessName: string }) {
 
   async function handleDelete() {
     setIsDeleting(true);
-    try {
-      await deleteAccount();
-    } catch (error) {
-      // deleteAccount redirects on success, which Next.js implements by
-      // throwing — let that propagate instead of treating it as failure.
-      unstable_rethrow(error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete account",
-      );
+    // No try/catch: deleteAccount returns { error } for every expected
+    // failure and only calls redirect() (which navigates away, unmounting
+    // this component) on success — nothing here should ever throw.
+    const result = await deleteAccount();
+    if (result?.error) {
+      toast.error(result.error);
       setIsDeleting(false);
     }
   }
