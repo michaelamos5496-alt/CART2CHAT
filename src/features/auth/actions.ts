@@ -70,12 +70,21 @@ export async function deleteAccount(): Promise<{ error: string } | undefined> {
 
     const { error } = await serviceClient.auth.admin.deleteUser(user.id);
     if (error) {
-      return { error: error.message };
+      console.error("deleteAccount: admin.deleteUser failed", {
+        name: error.name,
+        status: "status" in error ? error.status : undefined,
+        code: "code" in error ? error.code : undefined,
+        message: error.message,
+      });
+      return { error: error.message || "Failed to delete account" };
     }
   } catch (error) {
+    console.error("deleteAccount: unexpected error", error);
     return {
       error:
-        error instanceof Error ? error.message : "Failed to delete account",
+        error instanceof Error && error.message
+          ? error.message
+          : "Failed to delete account",
     };
   }
 
