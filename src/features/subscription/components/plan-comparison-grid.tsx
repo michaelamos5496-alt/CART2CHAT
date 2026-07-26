@@ -57,7 +57,7 @@ export function PlanComparisonGrid({
 
             <div className="flex items-baseline gap-1">
               <span className="text-4xl font-semibold tracking-tight">
-                ${plan.monthly_price}
+                ₵{plan.monthly_price}
               </span>
               <span className="text-muted-foreground text-sm">/month</span>
             </div>

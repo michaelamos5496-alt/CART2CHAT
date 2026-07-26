@@ -44,7 +44,7 @@ export function HeroSection() {
 
             <div className="flex flex-col items-center gap-3 sm:flex-row lg:items-start lg:justify-start">
               <Button size="lg" render={<Link href="/signup" />}>
-                Get started free
+                Get started
                 <ArrowRight />
               </Button>
               <Button
@@ -57,7 +57,7 @@ export function HeroSection() {
             </div>
 
             <p className="text-muted-foreground text-sm">
-              Free to start. No credit card required.
+              No credit card required to sign up.
             </p>
           </div>
         </Reveal>

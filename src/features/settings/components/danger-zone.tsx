@@ -59,7 +59,7 @@ function CancelSubscriptionAction({ plan }: { plan: SubscriptionPlan }) {
       <div>
         <p className="text-sm font-medium">Cancel subscription</p>
         <p className="text-muted-foreground text-sm">
-          Move back to the free Starter plan. You&apos;ll keep your store, but
+          Move back to the Starter plan. You&apos;ll keep your store, but
           lose access to paid features and higher limits.
         </p>
       </div>
@@ -71,7 +71,7 @@ function CancelSubscriptionAction({ plan }: { plan: SubscriptionPlan }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel your subscription?</AlertDialogTitle>
             <AlertDialogDescription>
-              You&apos;ll move to the free Starter plan immediately. Any
+              You&apos;ll move to the Starter plan immediately. Any
               products or categories over the Starter limit will stay, but
               you won&apos;t be able to add more until you&apos;re back under
               it.

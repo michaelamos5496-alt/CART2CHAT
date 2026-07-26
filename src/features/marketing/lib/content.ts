@@ -149,7 +149,6 @@ export interface PricingTier {
   name: string;
   description: string;
   monthlyPrice: number;
-  yearlyPrice: number;
   cta: string;
   href: string;
   highlighted?: boolean;
@@ -162,12 +161,11 @@ export const PRICING_TIERS: PricingTier[] = [
   {
     name: "Starter",
     description: "For testing the waters.",
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    cta: "Start for free",
+    monthlyPrice: 100,
+    cta: "Get started",
     href: "/signup",
     features: [
-      "Up to 20 products",
+      "Up to 5 products",
       "Unlimited categories",
       "Cart & WhatsApp checkout",
       "Full analytics dashboard",
@@ -178,13 +176,12 @@ export const PRICING_TIERS: PricingTier[] = [
   {
     name: "Growth",
     description: "For businesses ready to scale up.",
-    monthlyPrice: 19,
-    yearlyPrice: 15,
+    monthlyPrice: 250,
     cta: "Start free trial",
     href: "/signup",
     highlighted: true,
     features: [
-      "Up to 200 products",
+      "Up to 15 products",
       "Unlimited categories",
       "Full analytics dashboard",
       "Custom logo & banner",
@@ -194,8 +191,7 @@ export const PRICING_TIERS: PricingTier[] = [
   {
     name: "Pro",
     description: "For established storefronts.",
-    monthlyPrice: 49,
-    yearlyPrice: 39,
+    monthlyPrice: 500,
     cta: "Start free trial",
     href: "/signup",
     features: [

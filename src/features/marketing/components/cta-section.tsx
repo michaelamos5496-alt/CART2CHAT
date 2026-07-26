@@ -19,8 +19,7 @@ export function CtaSection() {
               Ready to turn your WhatsApp into a storefront?
             </h2>
             <p className="mx-auto max-w-md text-sm text-white/90 sm:text-base">
-              Set up {siteConfig.name} in minutes. Free to start, no credit card
-              required.
+              Set up {siteConfig.name} in minutes. No credit card required.
             </p>
             <div className="mx-auto flex flex-col gap-3 sm:flex-row">
               <Button
@@ -28,7 +27,7 @@ export function CtaSection() {
                 variant="secondary"
                 render={<Link href="/signup" />}
               >
-                Get started free
+                Get started
                 <ArrowRight />
               </Button>
               <Button
