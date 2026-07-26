@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import type { BusinessCategory } from "@/types/business";
 import type { CartItem, SelectedOption } from "@/types/cart";
 
 interface CartBusinessContext {
@@ -12,6 +13,7 @@ interface CartBusinessContext {
   currency: string;
   deliveryFee: number;
   whatsappMessageTemplate: string;
+  businessCategory: BusinessCategory;
 }
 
 // Two lines are the "same" cart item only if both the product AND every

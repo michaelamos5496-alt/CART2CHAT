@@ -21,6 +21,24 @@ import { CartLineItem } from "@/features/cart/components/cart-line-item";
 import { useCart } from "@/features/cart/lib/cart-context";
 import { checkoutSchema, type CheckoutInput } from "@/lib/validations/cart";
 import { formatCurrency } from "@/lib/format";
+import type { BusinessCategory } from "@/types/business";
+
+// Since there's no structured per-product option picker, this note is the
+// only place a customer can specify a variant — so its placeholder nudges
+// them toward what actually matters for the kind of shop it is. Fashion
+// shops need type/size/color specified most often, so they get a more
+// pointed example; other categories get a lighter, generic nudge.
+const NOTES_PLACEHOLDER: Record<BusinessCategory, string> = {
+  fashion_apparel:
+    "e.g. Type: dress, Size: M, Color: black. Anything else the seller should know.",
+  food_beverage: "e.g. Spice level, flavor, or allergy notes",
+  beauty_cosmetics: "e.g. Shade or scent preference",
+  electronics: "e.g. Color or storage size preference",
+  home_living: "e.g. Size, color, or material preference",
+  jewelry_accessories: "e.g. Size or metal preference",
+  health_wellness: "e.g. Strength or size preference",
+  other: "Anything the seller should know",
+};
 
 export function CartCheckoutForm({
   onSubmit,
@@ -31,7 +49,8 @@ export function CartCheckoutForm({
   isSubmitting: boolean;
   formError: string | null;
 }) {
-  const { items, subtotal, deliveryFee, total, currency } = useCart();
+  const { items, subtotal, deliveryFee, total, currency, businessCategory } =
+    useCart();
 
   const form = useForm<CheckoutInput>({
     resolver: zodResolver(checkoutSchema),
@@ -138,7 +157,7 @@ export function CartCheckoutForm({
                   <FormControl>
                     <Textarea
                       rows={2}
-                      placeholder="Anything the seller should know"
+                      placeholder={NOTES_PLACEHOLDER[businessCategory]}
                       disabled={isSubmitting}
                       {...field}
                     />

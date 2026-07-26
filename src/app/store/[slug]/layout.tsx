@@ -57,6 +57,7 @@ export default async function StoreLayout({
       currency={business.currency}
       deliveryFee={settings.delivery_fee}
       whatsappMessageTemplate={settings.whatsapp_message_template}
+      businessCategory={business.category}
     >
       <div className="flex min-h-svh flex-col">
         <StoreTopBar business={business} showSearch />
