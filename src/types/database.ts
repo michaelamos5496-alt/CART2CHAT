@@ -651,6 +651,14 @@ export interface Database {
         Args: { p_business_id: string; p_base: string };
         Returns: string;
       };
+      cancel_subscription: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
+      delete_own_account: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
       product_status: "draft" | "active" | "archived";

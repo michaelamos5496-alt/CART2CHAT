@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getOwnBusiness } from "@/features/business/lib/queries";
+import { DangerZone } from "@/features/settings/components/danger-zone";
 import { StoreSettingsForm } from "@/features/settings/components/store-settings-form";
 import { StorefrontVisibilityToggle } from "@/features/settings/components/storefront-visibility-toggle";
 import { getBusinessSettings } from "@/features/settings/lib/queries";
@@ -51,6 +52,13 @@ export default async function SettingsPage() {
           />
         </CardContent>
       </Card>
+
+      {billing && (
+        <DangerZone
+          businessName={business.name}
+          plan={billing.subscription.plan}
+        />
+      )}
     </div>
   );
 }
