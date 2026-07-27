@@ -166,10 +166,9 @@ export const PRICING_TIERS: PricingTier[] = [
     href: "/signup",
     features: [
       "Up to 5 products",
-      "Unlimited categories",
+      "Up to 3 categories",
       "Cart & WhatsApp checkout",
-      "Full analytics dashboard",
-      "Custom logo & banner",
+      "Basic analytics",
       "Community support",
     ],
   },
