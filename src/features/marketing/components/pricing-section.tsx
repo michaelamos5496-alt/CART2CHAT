@@ -8,7 +8,11 @@ import { SectionHeading } from "@/features/marketing/components/section-heading"
 import { PRICING_TIERS } from "@/features/marketing/lib/content";
 import { cn } from "@/lib/utils";
 
-export function PricingSection() {
+export function PricingSection({
+  isLoggedIn = false,
+}: {
+  isLoggedIn?: boolean;
+}) {
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <SectionHeading
@@ -46,9 +50,13 @@ export function PricingSection() {
               <Button
                 size="lg"
                 variant={tier.highlighted ? "default" : "outline"}
-                render={<Link href={tier.href} />}
+                render={
+                  <Link
+                    href={isLoggedIn ? "/dashboard/billing" : tier.href}
+                  />
+                }
               >
-                {tier.cta}
+                {isLoggedIn ? "Manage subscription" : tier.cta}
               </Button>
 
               <ul className="grid gap-2.5 text-sm">

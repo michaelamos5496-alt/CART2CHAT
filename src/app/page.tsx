@@ -12,12 +12,18 @@ import { MarketingHeader } from "@/features/marketing/components/marketing-heade
 import { PricingSection } from "@/features/marketing/components/pricing-section";
 import { TestimonialsSection } from "@/features/marketing/components/testimonials-section";
 import { toJsonLd } from "@/lib/json-ld";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -45,7 +51,7 @@ export default function Home() {
         <BenefitsSection />
         <HowItWorksSection />
         <FeaturesSection />
-        <PricingSection />
+        <PricingSection isLoggedIn={!!user} />
         <TestimonialsSection />
         <FaqSection />
         <CtaSection />
