@@ -27,22 +27,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { deleteAccount } from "@/features/auth/actions";
 import { cancelSubscription } from "@/features/settings/lib/mutations";
-import type { SubscriptionPlan } from "@/types/subscription";
+import type { SubscriptionStatus } from "@/types/subscription";
 
-function CancelSubscriptionAction({ plan }: { plan: SubscriptionPlan }) {
+function CancelSubscriptionAction({ status }: { status: SubscriptionStatus }) {
   const router = useRouter();
   const [isCancelling, setIsCancelling] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
-  if (plan === "starter") {
-    return null;
+  if (status === "cancelled") {
+    return (
+      <div>
+        <p className="text-sm font-medium">Subscription cancelled</p>
+        <p className="text-muted-foreground text-sm">
+          Your storefront is hidden from customers and you can&apos;t add new
+          products. Contact us to resubscribe and turn it back on.
+        </p>
+      </div>
+    );
   }
 
   async function handleCancel() {
     setIsCancelling(true);
     try {
       await cancelSubscription();
-      toast.success("Subscription cancelled — you're back on the Starter plan");
+      toast.success("Subscription cancelled");
       setOpen(false);
       router.refresh();
     } catch (error) {
@@ -59,8 +67,8 @@ function CancelSubscriptionAction({ plan }: { plan: SubscriptionPlan }) {
       <div>
         <p className="text-sm font-medium">Cancel subscription</p>
         <p className="text-muted-foreground text-sm">
-          Move back to the Starter plan. You&apos;ll keep your store, but
-          lose access to paid features and higher limits.
+          Your storefront is hidden from customers immediately and you
+          won&apos;t be able to add new products until you resubscribe.
         </p>
       </div>
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -71,10 +79,10 @@ function CancelSubscriptionAction({ plan }: { plan: SubscriptionPlan }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel your subscription?</AlertDialogTitle>
             <AlertDialogDescription>
-              You&apos;ll move to the Starter plan immediately. Any
-              products or categories over the Starter limit will stay, but
-              you won&apos;t be able to add more until you&apos;re back under
-              it.
+              Your storefront will be hidden from customers immediately, and
+              you won&apos;t be able to add new products until you
+              resubscribe. Existing products, categories, and orders are kept
+              as they are.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -173,10 +181,10 @@ function DeleteAccountAction({ businessName }: { businessName: string }) {
 
 export function DangerZone({
   businessName,
-  plan,
+  status,
 }: {
   businessName: string;
-  plan: SubscriptionPlan;
+  status: SubscriptionStatus;
 }) {
   return (
     <Card className="border-destructive/30 lg:max-w-2xl">
@@ -187,7 +195,7 @@ export function DangerZone({
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <CancelSubscriptionAction plan={plan} />
+        <CancelSubscriptionAction status={status} />
         <DeleteAccountAction businessName={businessName} />
       </CardContent>
     </Card>

@@ -49,6 +49,7 @@ export default async function SettingsPage() {
           <StorefrontVisibilityToggle
             businessId={business.id}
             isActive={business.is_active}
+            cancelled={billing?.subscription.status === "cancelled"}
           />
         </CardContent>
       </Card>
@@ -56,7 +57,7 @@ export default async function SettingsPage() {
       {billing && (
         <DangerZone
           businessName={business.name}
-          plan={billing.subscription.plan}
+          status={billing.subscription.status}
         />
       )}
     </div>

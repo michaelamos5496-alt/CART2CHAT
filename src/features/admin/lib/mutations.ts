@@ -39,17 +39,41 @@ export async function deleteBusiness(businessId: string) {
   if (error) throw new Error(error.message);
 }
 
+// Assigning a plan doubles as the (currently manual, since there's no
+// payment processor) reactivation path: it always clears a cancelled
+// status, so support can bring a business back after they've paid
+// outside the app. Storefront visibility is only restored if this
+// business was actually cancelled — an unrelated plan correction
+// shouldn't override an owner's own independent visibility choice.
 export async function updateBusinessPlan(
   businessId: string,
   plan: SubscriptionPlan,
 ) {
   const supabase = createClient();
-  const { error } = await supabase
+
+  const { data: current } = await supabase
     .from("business_subscriptions")
-    .update({ plan })
+    .select("status")
+    .eq("business_id", businessId)
+    .maybeSingle();
+
+  const wasCancelled = current?.status === "cancelled";
+
+  const { error: subscriptionError } = await supabase
+    .from("business_subscriptions")
+    .update({ plan, status: "active" })
     .eq("business_id", businessId);
 
-  if (error) throw new Error(error.message);
+  if (subscriptionError) throw new Error(subscriptionError.message);
+
+  if (wasCancelled) {
+    const { error: businessError } = await supabase
+      .from("businesses")
+      .update({ is_active: true })
+      .eq("id", businessId);
+
+    if (businessError) throw new Error(businessError.message);
+  }
 }
 
 export async function updatePlanLimits(

@@ -22,6 +22,7 @@ export default async function NewProductPage() {
   const maxProducts = overview?.limits.max_products ?? null;
   const atLimit =
     maxProducts !== null && (overview?.productCount ?? 0) >= maxProducts;
+  const isCancelled = overview?.subscription.status === "cancelled";
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -32,7 +33,14 @@ export default async function NewProductPage() {
         </p>
       </div>
 
-      {atLimit ? (
+      {isCancelled ? (
+        <div className="lg:max-w-2xl">
+          <UpgradeBanner
+            message="Your subscription is cancelled — resubscribe to add new products."
+            ctaLabel="View billing"
+          />
+        </div>
+      ) : atLimit ? (
         <div className="lg:max-w-2xl">
           <UpgradeBanner
             message={`You've reached your plan's limit of ${maxProducts} products. Upgrade to add more.`}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -38,11 +39,16 @@ export default async function BillingPage() {
 
       <Card className="lg:max-w-2xl">
         <CardHeader>
-          <CardTitle className="text-base">
+          <CardTitle className="flex items-center gap-2 text-base">
             You&apos;re on the {PLAN_META[subscription.plan].label} plan
+            {subscription.status === "cancelled" && (
+              <Badge variant="destructive">Cancelled</Badge>
+            )}
           </CardTitle>
           <CardDescription>
-            Current usage against your plan&apos;s limits.
+            {subscription.status === "cancelled"
+              ? "Your storefront is hidden and new products are blocked until you resubscribe."
+              : "Current usage against your plan's limits."}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">

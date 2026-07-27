@@ -10,6 +10,8 @@ import { StatCard } from "@/features/dashboard/components/stat-card";
 import { getOwnBusiness } from "@/features/business/lib/queries";
 import { getRecentOrders } from "@/features/orders/lib/queries";
 import { getPopularProducts } from "@/features/products/lib/queries";
+import { UpgradeBanner } from "@/features/subscription/components/upgrade-banner";
+import { getBillingOverview } from "@/features/subscription/lib/queries";
 import { formatCurrency } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -31,10 +33,11 @@ export default async function DashboardPage() {
     );
   }
 
-  const [stats, recentOrders, popularProducts] = await Promise.all([
+  const [stats, recentOrders, popularProducts, billing] = await Promise.all([
     getDashboardStats(business.id),
     getRecentOrders(business.id, 5),
     getPopularProducts(business.id, 5),
+    getBillingOverview(business.id),
   ]);
 
   return (
@@ -47,6 +50,13 @@ export default async function DashboardPage() {
           Here&apos;s what&apos;s happening with your store.
         </p>
       </div>
+
+      {billing?.subscription.status === "cancelled" && (
+        <UpgradeBanner
+          message="Your subscription is cancelled — your storefront is hidden and you can't add new products until you resubscribe."
+          ctaLabel="View billing"
+        />
+      )}
 
       <MotionSection>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

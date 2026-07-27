@@ -10,13 +10,30 @@ import { createClient } from "@/lib/supabase/client";
 export function StorefrontVisibilityToggle({
   businessId,
   isActive,
+  cancelled = false,
 }: {
   businessId: string;
   isActive: boolean;
+  cancelled?: boolean;
 }) {
   const router = useRouter();
   const [checked, setChecked] = React.useState(isActive);
   const [isUpdating, setIsUpdating] = React.useState(false);
+
+  if (cancelled) {
+    return (
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium">Storefront is hidden</p>
+          <p className="text-muted-foreground text-sm">
+            Your subscription is cancelled, so this is locked off until you
+            resubscribe.
+          </p>
+        </div>
+        <Switch checked={false} disabled />
+      </div>
+    );
+  }
 
   async function handleChange(next: boolean) {
     setChecked(next);
