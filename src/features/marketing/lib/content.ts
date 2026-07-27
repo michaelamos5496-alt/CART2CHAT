@@ -169,6 +169,7 @@ export const PRICING_TIERS: PricingTier[] = [
       "Up to 3 categories",
       "Cart & WhatsApp checkout",
       "Basic analytics",
+      "Custom logo & banner",
       "Community support",
     ],
   },
