@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { CheckCircle2, MessageCircle, ShoppingBag } from "lucide-react";
 
 const PRODUCTS = [
@@ -26,15 +23,13 @@ const PRODUCTS = [
   },
 ];
 
+// Entrance animation lives in the parent HeroSection's single GSAP
+// timeline (targets .hero-mockup-card-1/-2), so this stays a plain
+// presentational component rather than owning its own animation.
 export function HeroMockup() {
   return (
     <div className="relative mx-auto w-full max-w-md">
-      <motion.div
-        initial={{ opacity: 0, y: 30, rotate: -2 }}
-        animate={{ opacity: 1, y: 0, rotate: -3 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-card relative z-0 rounded-2xl border p-4 shadow-xl"
-      >
+      <div className="hero-mockup-card-1 bg-card relative z-0 -rotate-3 rounded-2xl border p-4 shadow-xl">
         <div className="mb-3 flex items-center gap-2">
           <span className="bg-primary flex size-6 items-center justify-center rounded-md">
             <ShoppingBag className="text-primary-foreground size-3.5" />
@@ -50,14 +45,9 @@ export function HeroMockup() {
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30, rotate: 2 }}
-        animate={{ opacity: 1, y: 0, rotate: 4 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-        className="absolute -right-4 -bottom-10 z-10 w-64 rounded-2xl border bg-[#e7fce3] p-3 shadow-xl sm:-right-8 dark:border-emerald-900 dark:bg-emerald-950"
-      >
+      <div className="hero-mockup-card-2 absolute -right-4 -bottom-10 z-10 w-64 rotate-4 rounded-2xl border bg-[#e7fce3] p-3 shadow-xl sm:-right-8 dark:border-emerald-900 dark:bg-emerald-950">
         <div className="mb-2 flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
           <MessageCircle className="size-4" />
           <span className="text-xs font-semibold">WhatsApp</span>
@@ -73,7 +63,7 @@ export function HeroMockup() {
             Total: $22.00
           </p>
         </div>
-      </motion.div>
+      </div>
 
       <div
         aria-hidden
