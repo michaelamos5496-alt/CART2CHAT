@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Store } from "lucide-react";
 
+import { LogoMark } from "@/components/layout/logo-mark";
 import { siteConfig } from "@/config/site";
 import { NAV_LINKS } from "@/features/marketing/lib/content";
 
@@ -11,7 +11,7 @@ export function MarketingFooter() {
         <div className="grid gap-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <span className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-lg">
-              <Store className="size-4" />
+              <LogoMark className="size-4" />
             </span>
             {siteConfig.name}
           </Link>

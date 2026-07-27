@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
+import { LogoMark } from "@/components/layout/logo-mark";
 import { siteConfig } from "@/config/site";
 
 export default function AuthLayout({
@@ -26,6 +27,9 @@ export default function AuthLayout({
           href="/"
           className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold"
         >
+          <span className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <LogoMark className="size-3.5" />
+          </span>
           {siteConfig.name}
         </Link>
         {children}

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Store } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { LogoMark } from "@/components/layout/logo-mark";
 import { ModeToggle } from "@/components/layout/mode-toggle";
 import {
   Sheet,
@@ -22,7 +23,7 @@ export function MarketingHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <span className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-lg">
-            <Store className="size-4" />
+            <LogoMark className="size-4" />
           </span>
           {siteConfig.name}
         </Link>
