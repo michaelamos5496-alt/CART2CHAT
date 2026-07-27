@@ -14,6 +14,7 @@ import {
 import { siteConfig } from "@/config/site";
 import { getOwnBusiness } from "@/features/business/lib/queries";
 import { StorefrontLinkButton } from "@/features/business/components/storefront-link-button";
+import { getBusinessSubscription } from "@/features/subscription/lib/queries";
 import { createClient } from "@/lib/supabase/server";
 
 // Belt-and-suspenders on top of the robots.txt disallow: robots.txt only
@@ -42,6 +43,17 @@ export default async function DashboardLayout({
     getOwnBusiness(),
     cookies(),
   ]);
+
+  // A cancelled subscription blocks the whole dashboard, not just the
+  // storefront — bounce straight back to the marketing site rather than
+  // leaving the owner stuck looking at a degraded dashboard.
+  if (business) {
+    const subscription = await getBusinessSubscription(business.id);
+    if (subscription?.status === "cancelled") {
+      redirect("/");
+    }
+  }
+
   const sidebarOpen = cookieStore.get("sidebar_state")?.value !== "false";
 
   return (
