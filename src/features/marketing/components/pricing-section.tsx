@@ -52,6 +52,11 @@ export function PricingSection() {
               </Button>
 
               <ul className="grid gap-2.5 text-sm">
+                {tier.includesPrevious && (
+                  <li className="text-foreground font-medium">
+                    Everything in {tier.includesPrevious}, plus:
+                  </li>
+                )}
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
                     <Check className="text-primary mt-0.5 size-4 shrink-0" />

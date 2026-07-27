@@ -30,10 +30,15 @@ export function PlanComparisonGrid({
 }) {
   return (
     <div className="grid gap-6 lg:grid-cols-3">
-      {plans.map((plan) => {
+      {plans.map((plan, index) => {
         const meta = PLAN_META[plan.plan];
         const isCurrent = plan.plan === currentPlan;
         const highlighted = plan.plan === "growth";
+        // plans is ordered by max_products ascending (see getAllPlanLimits),
+        // so each plan's entitlements are a strict superset of the one
+        // before it — this just makes that inheritance explicit.
+        const previousLabel =
+          index > 0 ? PLAN_META[plans[index - 1].plan].label : null;
 
         return (
           <div
@@ -65,6 +70,11 @@ export function PlanComparisonGrid({
             <PlanActionButton isCurrent={isCurrent} highlighted={highlighted} />
 
             <ul className="grid gap-2.5 text-sm">
+              {previousLabel && (
+                <li className="text-foreground font-medium">
+                  Everything in {previousLabel}, plus:
+                </li>
+              )}
               {planFeatureList(plan).map((feature) => (
                 <li key={feature} className="flex items-start gap-2">
                   <Check className="text-primary mt-0.5 size-4 shrink-0" />

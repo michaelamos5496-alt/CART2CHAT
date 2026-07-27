@@ -152,6 +152,13 @@ export interface PricingTier {
   cta: string;
   href: string;
   highlighted?: boolean;
+  // Name of the tier this one fully includes, if any — the UI renders
+  // "Everything in {includesPrevious}, plus:" above `features`, so each
+  // tier only lists what's new/exclusive to it rather than repeating the
+  // previous tier's bullets. Every tier's actual entitlements (plan_limits)
+  // are a strict superset of the tier below it — this only changes how
+  // that's presented, not what's granted.
+  includesPrevious?: string;
   features: string[];
 }
 
@@ -180,11 +187,11 @@ export const PRICING_TIERS: PricingTier[] = [
     cta: "Start free trial",
     href: "/signup",
     highlighted: true,
+    includesPrevious: "Starter",
     features: [
       "Up to 15 products",
       "Unlimited categories",
       "Full analytics dashboard",
-      "Custom logo & banner",
       "Priority email support",
     ],
   },
@@ -194,10 +201,9 @@ export const PRICING_TIERS: PricingTier[] = [
     monthlyPrice: 500,
     cta: "Start free trial",
     href: "/signup",
+    includesPrevious: "Growth",
     features: [
-      "Unlimited products & categories",
-      "Full analytics dashboard",
-      "Custom logo & banner",
+      "Unlimited products",
       "Priority WhatsApp support",
       "Early access to new features",
     ],
