@@ -11,6 +11,7 @@ import {
 import { getOwnBusiness } from "@/features/business/lib/queries";
 import { PLAN_META } from "@/features/subscription/lib/plan-meta";
 import { PlanComparisonGrid } from "@/features/subscription/components/plan-comparison-grid";
+import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
 import { UsageMeter } from "@/features/subscription/components/usage-meter";
 import { getBillingOverview } from "@/features/subscription/lib/queries";
 
@@ -62,6 +63,9 @@ export default async function BillingPage() {
             used={categoryCount}
             limit={limits.max_categories}
           />
+          {subscription.status === "cancelled" && (
+            <ResumeSubscriptionButton />
+          )}
         </CardContent>
       </Card>
 

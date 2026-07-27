@@ -8,13 +8,12 @@ const ADMIN_PATHS = ["/admin"];
 
 // Paths that must stay reachable even when locked out for some other
 // reason, so an owner can see *why* rather than bouncing in a loop.
+// A cancelled/past-due subscription deliberately does NOT lock the whole
+// dashboard the way suspension does — it only hides the storefront and
+// blocks new products (enforced at the database layer), so there's no
+// exempt-paths list needed for billing status.
 const SUSPENSION_LOCK_EXEMPT_PATHS = ["/dashboard/suspended"];
 const PENDING_LOCK_EXEMPT_PATHS = ["/dashboard/pending"];
-const BILLING_LOCK_EXEMPT_PATHS = [
-  "/dashboard/billing",
-  ...SUSPENSION_LOCK_EXEMPT_PATHS,
-  ...PENDING_LOCK_EXEMPT_PATHS,
-];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -74,9 +73,6 @@ export async function updateSession(request: NextRequest) {
   const isPendingLockExempt = PENDING_LOCK_EXEMPT_PATHS.some((path) =>
     pathname.startsWith(path),
   );
-  const isBillingLockExempt = BILLING_LOCK_EXEMPT_PATHS.some((path) =>
-    pathname.startsWith(path),
-  );
 
   if (pathname.startsWith("/dashboard") && user) {
     const { data: business } = await supabase
@@ -97,25 +93,6 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(
         new URL("/dashboard/suspended", request.url),
       );
-    }
-
-    // Nothing sets a subscription to a non-"active" status yet (no payment
-    // integration is wired up), so this never fires today — it's here so a
-    // future Stripe/local-payment webhook that marks a subscription
-    // "past_due" or "cancelled" immediately locks the dashboard without any
-    // further app changes.
-    if (business && !business.is_suspended && !isBillingLockExempt) {
-      const { data: subscription } = await supabase
-        .from("business_subscriptions")
-        .select("status")
-        .eq("business_id", business.id)
-        .maybeSingle();
-
-      if (subscription && subscription.status !== "active") {
-        return NextResponse.redirect(
-          new URL("/dashboard/billing", request.url),
-        );
-      }
     }
   }
 

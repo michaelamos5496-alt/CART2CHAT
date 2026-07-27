@@ -45,3 +45,12 @@ export async function cancelSubscription() {
     throw new Error(error.message);
   }
 }
+
+export async function resumeSubscription() {
+  const supabase = createClient();
+  const { error } = await supabase.rpc("resume_subscription");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

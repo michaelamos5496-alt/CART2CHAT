@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { deleteAccount } from "@/features/auth/actions";
 import { cancelSubscription } from "@/features/settings/lib/mutations";
+import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
 import type { SubscriptionStatus } from "@/types/subscription";
 
 function CancelSubscriptionAction({ status }: { status: SubscriptionStatus }) {
@@ -36,12 +37,15 @@ function CancelSubscriptionAction({ status }: { status: SubscriptionStatus }) {
 
   if (status === "cancelled") {
     return (
-      <div>
-        <p className="text-sm font-medium">Subscription cancelled</p>
-        <p className="text-muted-foreground text-sm">
-          Your storefront is hidden from customers and you can&apos;t add new
-          products. Contact us to resubscribe and turn it back on.
-        </p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium">Subscription cancelled</p>
+          <p className="text-muted-foreground text-sm">
+            Your storefront is hidden from customers and you can&apos;t add
+            new products. Resume any time to turn it back on.
+          </p>
+        </div>
+        <ResumeSubscriptionButton />
       </div>
     );
   }

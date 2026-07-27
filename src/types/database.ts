@@ -655,6 +655,10 @@ export interface Database {
         Args: Record<string, never>;
         Returns: undefined;
       };
+      resume_subscription: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
     };
     Enums: {
       product_status: "draft" | "active" | "archived";
