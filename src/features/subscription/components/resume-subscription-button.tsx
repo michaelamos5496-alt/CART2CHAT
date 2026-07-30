@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { resumeSubscription } from "@/features/settings/lib/mutations";
+import { resumeSubscriptionAction } from "@/features/subscription/lib/actions";
 
 export function ResumeSubscriptionButton() {
   const router = useRouter();
@@ -14,16 +14,14 @@ export function ResumeSubscriptionButton() {
 
   async function handleResume() {
     setIsResuming(true);
-    try {
-      await resumeSubscription();
-      toast.success("Subscription resumed — your storefront is back online");
-      router.refresh();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to resume subscription",
-      );
+    const result = await resumeSubscriptionAction();
+    if (result?.error) {
+      toast.error(result.error);
       setIsResuming(false);
+      return;
     }
+    toast.success("Subscription resumed — your storefront is back online");
+    router.refresh();
   }
 
   return (

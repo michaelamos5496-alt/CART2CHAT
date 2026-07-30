@@ -1,3 +1,4 @@
+import * as React from "react";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { getOwnBusiness } from "@/features/business/lib/queries";
 import { PLAN_META } from "@/features/subscription/lib/plan-meta";
+import { CheckoutStatusToast } from "@/features/subscription/components/checkout-status-toast";
 import { PlanComparisonGrid } from "@/features/subscription/components/plan-comparison-grid";
 import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
 import { UsageMeter } from "@/features/subscription/components/usage-meter";
@@ -31,6 +33,9 @@ export default async function BillingPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-6">
+      <React.Suspense fallback={null}>
+        <CheckoutStatusToast />
+      </React.Suspense>
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
         <p className="text-muted-foreground text-sm">

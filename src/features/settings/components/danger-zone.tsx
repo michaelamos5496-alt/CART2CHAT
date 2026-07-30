@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { deleteAccount } from "@/features/auth/actions";
-import { cancelSubscription } from "@/features/settings/lib/mutations";
 import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
+import { cancelSubscriptionAction } from "@/features/subscription/lib/actions";
 import type { SubscriptionStatus } from "@/types/subscription";
 
 function CancelSubscriptionAction({ status }: { status: SubscriptionStatus }) {
@@ -52,18 +52,15 @@ function CancelSubscriptionAction({ status }: { status: SubscriptionStatus }) {
 
   async function handleCancel() {
     setIsCancelling(true);
-    try {
-      await cancelSubscription();
-      toast.success("Subscription cancelled");
-      setOpen(false);
-      router.refresh();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to cancel subscription",
-      );
-    } finally {
+    const result = await cancelSubscriptionAction();
+    if (result?.error) {
+      toast.error(result.error);
       setIsCancelling(false);
+      return;
     }
+    toast.success("Subscription cancelled");
+    setOpen(false);
+    router.refresh();
   }
 
   return (

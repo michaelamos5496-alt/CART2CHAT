@@ -149,6 +149,7 @@ export interface PricingTier {
   name: string;
   description: string;
   monthlyPrice: number;
+  yearlyPrice: number;
   cta: string;
   href: string;
   highlighted?: boolean;
@@ -169,6 +170,7 @@ export const PRICING_TIERS: PricingTier[] = [
     name: "Starter",
     description: "For testing the waters.",
     monthlyPrice: 100,
+    yearlyPrice: 1000,
     cta: "Get started",
     href: "/signup",
     features: [
@@ -184,6 +186,7 @@ export const PRICING_TIERS: PricingTier[] = [
     name: "Growth",
     description: "For businesses ready to scale up.",
     monthlyPrice: 250,
+    yearlyPrice: 2500,
     cta: "Start free trial",
     href: "/signup",
     highlighted: true,
@@ -199,6 +202,7 @@ export const PRICING_TIERS: PricingTier[] = [
     name: "Pro",
     description: "For established storefronts.",
     monthlyPrice: 500,
+    yearlyPrice: 5000,
     cta: "Start free trial",
     href: "/signup",
     includesPrevious: "Growth",

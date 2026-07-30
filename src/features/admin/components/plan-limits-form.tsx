@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { syncPaystackPlan } from "@/features/admin/lib/actions";
 import { updatePlanLimits } from "@/features/admin/lib/mutations";
 import { PLAN_META } from "@/features/subscription/lib/plan-meta";
 import type { PlanLimits } from "@/types/subscription";
@@ -44,6 +45,26 @@ export function PlanLimitsForm({ planLimits }: { planLimits: PlanLimits }) {
     planLimits.has_custom_branding,
   );
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isSyncing, setIsSyncing] = React.useState(false);
+  const [paystackPlanCode, setPaystackPlanCode] = React.useState(
+    planLimits.paystack_plan_code,
+  );
+  const [paystackYearlyPlanCode, setPaystackYearlyPlanCode] = React.useState(
+    planLimits.paystack_yearly_plan_code,
+  );
+
+  async function handleSync() {
+    setIsSyncing(true);
+    const result = await syncPaystackPlan(planLimits.plan);
+    if ("error" in result) {
+      toast.error(result.error);
+    } else {
+      setPaystackPlanCode(result.planCode);
+      setPaystackYearlyPlanCode(result.yearlyPlanCode);
+      toast.success(`${PLAN_META[planLimits.plan].label} synced to Paystack`);
+    }
+    setIsSyncing(false);
+  }
 
   async function handleSave() {
     setIsSaving(true);
@@ -142,14 +163,39 @@ export function PlanLimitsForm({ planLimits }: { planLimits: PlanLimits }) {
             disabled={isSaving}
           />
         </div>
-        <Button
-          size="sm"
-          className="justify-self-start"
-          onClick={handleSave}
-          disabled={isSaving}
-        >
-          {isSaving ? "Saving..." : "Save changes"}
-        </Button>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-1.5">
+            <Label>Paystack plan code (monthly)</Label>
+            <p className="text-muted-foreground text-sm">
+              {paystackPlanCode ?? "Not synced yet"}
+            </p>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Paystack plan code (yearly)</Label>
+            <p className="text-muted-foreground text-sm">
+              {paystackYearlyPlanCode ?? "Not synced yet"}
+            </p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            className="justify-self-start"
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save changes"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="justify-self-start"
+            onClick={handleSync}
+            disabled={isSyncing}
+          >
+            {isSyncing ? "Syncing..." : "Sync to Paystack"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

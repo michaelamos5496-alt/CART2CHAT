@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
 
@@ -7,12 +10,16 @@ import { Reveal } from "@/components/shared/reveal";
 import { SectionHeading } from "@/features/marketing/components/section-heading";
 import { PRICING_TIERS } from "@/features/marketing/lib/content";
 import { cn } from "@/lib/utils";
+import type { BillingInterval } from "@/types/subscription";
 
 export function PricingSection({
   isLoggedIn = false,
 }: {
   isLoggedIn?: boolean;
 }) {
+  const [interval, setBillingInterval] =
+    React.useState<BillingInterval>("monthly");
+
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       <SectionHeading
@@ -21,60 +28,84 @@ export function PricingSection({
         description="Simple, transparent pricing for every stage."
       />
 
+      <div className="mt-6 flex items-center justify-center gap-2">
+        <Button
+          size="sm"
+          variant={interval === "monthly" ? "default" : "outline"}
+          onClick={() => setBillingInterval("monthly")}
+        >
+          Monthly
+        </Button>
+        <Button
+          size="sm"
+          variant={interval === "yearly" ? "default" : "outline"}
+          onClick={() => setBillingInterval("yearly")}
+        >
+          Yearly
+        </Button>
+      </div>
+
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        {PRICING_TIERS.map((tier, index) => (
-          <Reveal key={tier.name} delay={index * 0.08}>
-            <div
-              className={cn(
-                "grid h-full gap-6 rounded-2xl border p-6",
-                tier.highlighted && "border-primary shadow-lg",
-              )}
-            >
-              <div className="grid gap-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">{tier.name}</h3>
-                  {tier.highlighted && <Badge>Most popular</Badge>}
-                </div>
-                <p className="text-muted-foreground text-sm">
-                  {tier.description}
-                </p>
-              </div>
+        {PRICING_TIERS.map((tier, index) => {
+          const price =
+            interval === "yearly" ? tier.yearlyPrice : tier.monthlyPrice;
 
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-semibold tracking-tight">
-                  ₵{tier.monthlyPrice}
-                </span>
-                <span className="text-muted-foreground text-sm">/month</span>
-              </div>
-
-              <Button
-                size="lg"
-                variant={tier.highlighted ? "default" : "outline"}
-                render={
-                  <Link
-                    href={isLoggedIn ? "/dashboard/billing" : tier.href}
-                  />
-                }
-              >
-                {isLoggedIn ? "Manage subscription" : tier.cta}
-              </Button>
-
-              <ul className="grid gap-2.5 text-sm">
-                {tier.includesPrevious && (
-                  <li className="text-foreground font-medium">
-                    Everything in {tier.includesPrevious}, plus:
-                  </li>
+          return (
+            <Reveal key={tier.name} delay={index * 0.08}>
+              <div
+                className={cn(
+                  "grid h-full gap-6 rounded-2xl border p-6",
+                  tier.highlighted && "border-primary shadow-lg",
                 )}
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2">
-                    <Check className="text-primary mt-0.5 size-4 shrink-0" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        ))}
+              >
+                <div className="grid gap-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold">{tier.name}</h3>
+                    {tier.highlighted && <Badge>Most popular</Badge>}
+                  </div>
+                  <p className="text-muted-foreground text-sm">
+                    {tier.description}
+                  </p>
+                </div>
+
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-semibold tracking-tight">
+                    ₵{price}
+                  </span>
+                  <span className="text-muted-foreground text-sm">
+                    /{interval === "yearly" ? "year" : "month"}
+                  </span>
+                </div>
+
+                <Button
+                  size="lg"
+                  variant={tier.highlighted ? "default" : "outline"}
+                  render={
+                    <Link
+                      href={isLoggedIn ? "/dashboard/billing" : tier.href}
+                    />
+                  }
+                >
+                  {isLoggedIn ? "Manage subscription" : tier.cta}
+                </Button>
+
+                <ul className="grid gap-2.5 text-sm">
+                  {tier.includesPrevious && (
+                    <li className="text-foreground font-medium">
+                      Everything in {tier.includesPrevious}, plus:
+                    </li>
+                  )}
+                  {tier.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
+                      <Check className="text-primary mt-0.5 size-4 shrink-0" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

@@ -481,9 +481,11 @@ export interface Database {
           business_id: string;
           plan: "starter" | "growth" | "pro";
           status: "active" | "trialing" | "past_due" | "cancelled";
-          provider: "none" | "stripe" | "local";
+          provider: "none" | "stripe" | "local" | "paystack";
           provider_customer_id: string | null;
           provider_subscription_id: string | null;
+          paystack_email_token: string | null;
+          billing_interval: "monthly" | "yearly";
           current_period_end: string | null;
           created_at: string;
           updated_at: string;
@@ -492,9 +494,11 @@ export interface Database {
           business_id: string;
           plan?: "starter" | "growth" | "pro";
           status?: "active" | "trialing" | "past_due" | "cancelled";
-          provider?: "none" | "stripe" | "local";
+          provider?: "none" | "stripe" | "local" | "paystack";
           provider_customer_id?: string | null;
           provider_subscription_id?: string | null;
+          paystack_email_token?: string | null;
+          billing_interval?: "monthly" | "yearly";
           current_period_end?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -503,9 +507,11 @@ export interface Database {
           business_id?: string;
           plan?: "starter" | "growth" | "pro";
           status?: "active" | "trialing" | "past_due" | "cancelled";
-          provider?: "none" | "stripe" | "local";
+          provider?: "none" | "stripe" | "local" | "paystack";
           provider_customer_id?: string | null;
           provider_subscription_id?: string | null;
+          paystack_email_token?: string | null;
+          billing_interval?: "monthly" | "yearly";
           current_period_end?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -521,6 +527,8 @@ export interface Database {
           max_categories: number | null;
           has_full_analytics: boolean;
           has_custom_branding: boolean;
+          paystack_plan_code: string | null;
+          paystack_yearly_plan_code: string | null;
         };
         Insert: {
           plan: "starter" | "growth" | "pro";
@@ -530,6 +538,8 @@ export interface Database {
           max_categories?: number | null;
           has_full_analytics?: boolean;
           has_custom_branding?: boolean;
+          paystack_plan_code?: string | null;
+          paystack_yearly_plan_code?: string | null;
         };
         Update: {
           plan?: "starter" | "growth" | "pro";
@@ -539,6 +549,8 @@ export interface Database {
           max_categories?: number | null;
           has_full_analytics?: boolean;
           has_custom_branding?: boolean;
+          paystack_plan_code?: string | null;
+          paystack_yearly_plan_code?: string | null;
         };
         Relationships: [];
       };
