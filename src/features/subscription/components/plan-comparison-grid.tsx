@@ -10,6 +10,7 @@ import { PLAN_META } from "@/features/subscription/lib/plan-meta";
 import { cn } from "@/lib/utils";
 import type {
   BillingInterval,
+  BillingMode,
   PlanLimits,
   SubscriptionPlan,
 } from "@/types/subscription";
@@ -32,9 +33,11 @@ function planFeatureList(limits: PlanLimits): string[] {
 export function PlanComparisonGrid({
   plans,
   currentPlan,
+  currentBillingMode,
 }: {
   plans: PlanLimits[];
   currentPlan: SubscriptionPlan;
+  currentBillingMode: BillingMode;
 }) {
   const [interval, setBillingInterval] =
     React.useState<BillingInterval>("monthly");
@@ -110,6 +113,7 @@ export function PlanComparisonGrid({
                 isCurrent={isCurrent}
                 isDowngrade={isDowngrade}
                 highlighted={highlighted}
+                billingMode={isCurrent ? currentBillingMode : undefined}
               />
 
               <ul className="grid gap-2.5 text-sm">

@@ -46,7 +46,11 @@ export interface PaystackTransaction {
 export async function initializeTransaction(params: {
   email: string;
   amountKobo: number;
-  planCode: string;
+  // Omit to run a plan-less, one-time charge — Paystack then shows every
+  // channel enabled on the account (including Mobile Money). Recurring
+  // subscriptions only support Card, so passing a plan restricts checkout
+  // to Card only.
+  planCode?: string;
   callbackUrl: string;
   metadata: Record<string, unknown>;
 }): Promise<PaystackTransaction> {
@@ -55,7 +59,7 @@ export async function initializeTransaction(params: {
     body: JSON.stringify({
       email: params.email,
       amount: params.amountKobo,
-      plan: params.planCode,
+      ...(params.planCode ? { plan: params.planCode } : {}),
       callback_url: params.callbackUrl,
       metadata: params.metadata,
     }),

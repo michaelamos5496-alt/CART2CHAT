@@ -486,6 +486,7 @@ export interface Database {
           provider_subscription_id: string | null;
           paystack_email_token: string | null;
           billing_interval: "monthly" | "yearly";
+          billing_mode: "recurring" | "manual";
           current_period_end: string | null;
           created_at: string;
           updated_at: string;
@@ -499,6 +500,7 @@ export interface Database {
           provider_subscription_id?: string | null;
           paystack_email_token?: string | null;
           billing_interval?: "monthly" | "yearly";
+          billing_mode?: "recurring" | "manual";
           current_period_end?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -512,6 +514,7 @@ export interface Database {
           provider_subscription_id?: string | null;
           paystack_email_token?: string | null;
           billing_interval?: "monthly" | "yearly";
+          billing_mode?: "recurring" | "manual";
           current_period_end?: string | null;
           created_at?: string;
           updated_at?: string;

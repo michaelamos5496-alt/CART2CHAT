@@ -2,7 +2,24 @@ import { NextResponse } from "next/server";
 
 import { verifyWebhookSignature } from "@/lib/paystack";
 import { createServiceClient } from "@/lib/supabase/service";
-import type { BillingInterval, SubscriptionPlan } from "@/types/subscription";
+import type {
+  BillingInterval,
+  BillingMode,
+  SubscriptionPlan,
+} from "@/types/subscription";
+
+// Mobile Money charges have no Paystack Plan/subscription behind them, so
+// no subscription.create event will ever set current_period_end — compute
+// it ourselves from the interval the checkout metadata recorded.
+function computeManualPeriodEnd(interval: BillingInterval): string {
+  const end = new Date();
+  if (interval === "yearly") {
+    end.setFullYear(end.getFullYear() + 1);
+  } else {
+    end.setMonth(end.getMonth() + 1);
+  }
+  return end.toISOString();
+}
 
 interface PaystackEvent {
   event: string;
@@ -11,6 +28,7 @@ interface PaystackEvent {
       business_id?: string;
       plan?: SubscriptionPlan;
       interval?: BillingInterval;
+      mode?: BillingMode;
     };
     customer?: { customer_code?: string };
     subscription_code?: string;
@@ -39,8 +57,10 @@ export async function POST(request: Request) {
       const businessId = event.data.metadata?.business_id;
       const plan = event.data.metadata?.plan;
       // Older in-flight checkouts (before yearly billing existed) won't
-      // carry an interval in their metadata — default to monthly.
+      // carry an interval/mode in their metadata — default to monthly
+      // recurring, matching pre-existing behavior.
       const interval = event.data.metadata?.interval ?? "monthly";
+      const mode = event.data.metadata?.mode ?? "recurring";
       const customerCode = event.data.customer?.customer_code;
 
       if (!businessId || !plan || !customerCode) {
@@ -60,6 +80,13 @@ export async function POST(request: Request) {
           provider: "paystack",
           provider_customer_id: customerCode,
           billing_interval: interval,
+          billing_mode: mode,
+          // Recurring subscriptions get this from subscription.create
+          // instead; manual (Mobile Money) charges never fire that
+          // event, so we compute the paid-through date ourselves.
+          ...(mode === "manual"
+            ? { current_period_end: computeManualPeriodEnd(interval) }
+            : {}),
         })
         .eq("business_id", businessId);
 

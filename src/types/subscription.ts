@@ -11,6 +11,13 @@ export type SubscriptionProvider = "none" | "stripe" | "local" | "paystack";
 
 export type BillingInterval = "monthly" | "yearly";
 
+// "recurring" is a Card subscription tied to a Paystack Plan (auto-bills
+// via subscription.create/charge.success). "manual" is a plan-less,
+// one-time charge (used for Mobile Money, which Paystack doesn't support
+// as a recurring-subscription channel) — the customer has to pay again
+// before current_period_end themselves.
+export type BillingMode = "recurring" | "manual";
+
 export interface BusinessSubscription {
   business_id: string;
   plan: SubscriptionPlan;
@@ -23,6 +30,7 @@ export interface BusinessSubscription {
   // subscription.create webhook payload.
   paystack_email_token: string | null;
   billing_interval: BillingInterval;
+  billing_mode: BillingMode;
   current_period_end: string | null;
   created_at: string;
   updated_at: string;

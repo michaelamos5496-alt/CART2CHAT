@@ -16,6 +16,7 @@ import { PlanComparisonGrid } from "@/features/subscription/components/plan-comp
 import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
 import { UsageMeter } from "@/features/subscription/components/usage-meter";
 import { getBillingOverview } from "@/features/subscription/lib/queries";
+import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Billing",
@@ -68,6 +69,15 @@ export default async function BillingPage() {
             used={categoryCount}
             limit={limits.max_categories}
           />
+          {subscription.billing_mode === "manual" &&
+            subscription.status !== "cancelled" &&
+            subscription.current_period_end && (
+              <p className="text-muted-foreground text-sm">
+                Paid via Mobile Money — valid until{" "}
+                {formatDate(subscription.current_period_end)}. Renew before
+                then to keep your plan active.
+              </p>
+            )}
           {subscription.status === "cancelled" && (
             <ResumeSubscriptionButton />
           )}
@@ -76,7 +86,11 @@ export default async function BillingPage() {
 
       <div>
         <h2 className="mb-4 text-lg font-semibold tracking-tight">Plans</h2>
-        <PlanComparisonGrid plans={allPlans} currentPlan={subscription.plan} />
+        <PlanComparisonGrid
+          plans={allPlans}
+          currentPlan={subscription.plan}
+          currentBillingMode={subscription.billing_mode}
+        />
       </div>
     </div>
   );
