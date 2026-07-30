@@ -51,6 +51,10 @@ export async function initializeTransaction(params: {
   // subscriptions only support Card, so passing a plan restricts checkout
   // to Card only.
   planCode?: string;
+  // Explicitly restricts which payment methods Paystack offers. Without
+  // this, auto-detection can prioritize something like Apple Pay over
+  // Mobile Money on a device that has it configured.
+  channels?: string[];
   callbackUrl: string;
   metadata: Record<string, unknown>;
 }): Promise<PaystackTransaction> {
@@ -60,6 +64,7 @@ export async function initializeTransaction(params: {
       email: params.email,
       amount: params.amountKobo,
       ...(params.planCode ? { plan: params.planCode } : {}),
+      ...(params.channels ? { channels: params.channels } : {}),
       callback_url: params.callbackUrl,
       metadata: params.metadata,
     }),

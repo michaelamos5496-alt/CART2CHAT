@@ -78,6 +78,10 @@ export async function initiateCheckout(
       email: user.email ?? "",
       amountKobo: Math.round(amount * 100),
       planCode,
+      // "manual" checkout is the Mobile Money path — pin the channel list
+      // so device-level auto-detection (e.g. Apple Pay being configured)
+      // can't push Mobile Money out of the way.
+      channels: mode === "manual" ? ["mobile_money", "card"] : undefined,
       callbackUrl: `${env.NEXT_PUBLIC_SITE_URL}/dashboard/billing/callback`,
       metadata: { business_id: business.id, plan, interval, mode },
     });
