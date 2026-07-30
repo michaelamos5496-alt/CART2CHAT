@@ -34,10 +34,16 @@ export function PlanComparisonGrid({
   plans,
   currentPlan,
   currentBillingMode,
+  forcePaywall,
 }: {
   plans: PlanLimits[];
   currentPlan: SubscriptionPlan;
   currentBillingMode: BillingMode;
+  // The auto-provisioned row defaults to plan: 'starter', so without this
+  // a business that's never actually paid would see Starter marked
+  // "Current plan" with a disabled button — forcing isCurrent false here
+  // makes every plan, including Starter, show a real payment button.
+  forcePaywall?: boolean;
 }) {
   const [interval, setBillingInterval] =
     React.useState<BillingInterval>("monthly");
@@ -67,8 +73,9 @@ export function PlanComparisonGrid({
       <div className="grid gap-6 lg:grid-cols-3">
         {plans.map((plan, index) => {
           const meta = PLAN_META[plan.plan];
-          const isCurrent = plan.plan === currentPlan;
-          const isDowngrade = currentIndex >= 0 && index < currentIndex;
+          const isCurrent = !forcePaywall && plan.plan === currentPlan;
+          const isDowngrade =
+            !forcePaywall && currentIndex >= 0 && index < currentIndex;
           const highlighted = plan.plan === "growth";
           // Each plan's entitlements are a strict superset of the one
           // before it (see the ordering note on currentIndex above) — this

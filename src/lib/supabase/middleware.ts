@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { env } from "@/lib/env";
+import { requiresSubscription } from "@/features/subscription/lib/paywall";
 
 const PROTECTED_PATHS = ["/dashboard", "/admin"];
 const ADMIN_PATHS = ["/admin"];
@@ -10,10 +11,12 @@ const ADMIN_PATHS = ["/admin"];
 // reason, so an owner can see *why* rather than bouncing in a loop.
 // A cancelled/past-due subscription deliberately does NOT lock the whole
 // dashboard the way suspension does — it only hides the storefront and
-// blocks new products (enforced at the database layer), so there's no
-// exempt-paths list needed for billing status.
+// blocks new products (enforced at the database layer). The pre-payment
+// gate below (requiresSubscription) is the exception: a business that has
+// never completed a checkout at all gets locked to /dashboard/billing.
 const SUSPENSION_LOCK_EXEMPT_PATHS = ["/dashboard/suspended"];
 const PENDING_LOCK_EXEMPT_PATHS = ["/dashboard/pending"];
+const SUBSCRIPTION_LOCK_EXEMPT_PATHS = ["/dashboard/billing"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -73,6 +76,9 @@ export async function updateSession(request: NextRequest) {
   const isPendingLockExempt = PENDING_LOCK_EXEMPT_PATHS.some((path) =>
     pathname.startsWith(path),
   );
+  const isSubscriptionLockExempt = SUBSCRIPTION_LOCK_EXEMPT_PATHS.some(
+    (path) => pathname.startsWith(path),
+  );
 
   if (pathname.startsWith("/dashboard") && user) {
     const { data: business } = await supabase
@@ -93,6 +99,25 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(
         new URL("/dashboard/suspended", request.url),
       );
+    }
+
+    if (business && !isSubscriptionLockExempt) {
+      const { data: subscription } = await supabase
+        .from("business_subscriptions")
+        .select("provider, created_at")
+        .eq("business_id", business.id)
+        .maybeSingle();
+
+      // Fails open on missing/errored data, same as the checks above —
+      // never lock someone out of their own dashboard over a query hiccup.
+      if (subscription && requiresSubscription(subscription)) {
+        const { data: isAdmin } = await supabase.rpc("is_super_admin");
+        if (!isAdmin) {
+          return NextResponse.redirect(
+            new URL("/dashboard/billing", request.url),
+          );
+        }
+      }
     }
   }
 

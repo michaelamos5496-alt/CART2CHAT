@@ -16,6 +16,7 @@ import { PlanComparisonGrid } from "@/features/subscription/components/plan-comp
 import { ResumeSubscriptionButton } from "@/features/subscription/components/resume-subscription-button";
 import { UsageMeter } from "@/features/subscription/components/usage-meter";
 import { getBillingOverview } from "@/features/subscription/lib/queries";
+import { requiresSubscription } from "@/features/subscription/lib/paywall";
 import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ export default async function BillingPage() {
 
   const { subscription, limits, allPlans, productCount, categoryCount } =
     overview;
+  const mustSubscribe = requiresSubscription(subscription);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -47,41 +49,47 @@ export default async function BillingPage() {
       <Card className="lg:max-w-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            You&apos;re on the {PLAN_META[subscription.plan].label} plan
+            {mustSubscribe
+              ? "Choose a plan to activate your dashboard"
+              : `You're on the ${PLAN_META[subscription.plan].label} plan`}
             {subscription.status === "cancelled" && (
               <Badge variant="destructive">Cancelled</Badge>
             )}
           </CardTitle>
           <CardDescription>
-            {subscription.status === "cancelled"
-              ? "Your storefront is hidden and new products are blocked until you resubscribe."
-              : "Current usage against your plan's limits."}
+            {mustSubscribe
+              ? "Pick a plan below and complete payment to start using your dashboard."
+              : subscription.status === "cancelled"
+                ? "Your storefront is hidden and new products are blocked until you resubscribe."
+                : "Current usage against your plan's limits."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <UsageMeter
-            label="Products"
-            used={productCount}
-            limit={limits.max_products}
-          />
-          <UsageMeter
-            label="Categories"
-            used={categoryCount}
-            limit={limits.max_categories}
-          />
-          {subscription.billing_mode === "manual" &&
-            subscription.status !== "cancelled" &&
-            subscription.current_period_end && (
-              <p className="text-muted-foreground text-sm">
-                Paid via Mobile Money — valid until{" "}
-                {formatDate(subscription.current_period_end)}. Renew before
-                then to keep your plan active.
-              </p>
+        {!mustSubscribe && (
+          <CardContent className="grid gap-4">
+            <UsageMeter
+              label="Products"
+              used={productCount}
+              limit={limits.max_products}
+            />
+            <UsageMeter
+              label="Categories"
+              used={categoryCount}
+              limit={limits.max_categories}
+            />
+            {subscription.billing_mode === "manual" &&
+              subscription.status !== "cancelled" &&
+              subscription.current_period_end && (
+                <p className="text-muted-foreground text-sm">
+                  Paid via Mobile Money — valid until{" "}
+                  {formatDate(subscription.current_period_end)}. Renew before
+                  then to keep your plan active.
+                </p>
+              )}
+            {subscription.status === "cancelled" && (
+              <ResumeSubscriptionButton />
             )}
-          {subscription.status === "cancelled" && (
-            <ResumeSubscriptionButton />
-          )}
-        </CardContent>
+          </CardContent>
+        )}
       </Card>
 
       <div>
@@ -90,6 +98,7 @@ export default async function BillingPage() {
           plans={allPlans}
           currentPlan={subscription.plan}
           currentBillingMode={subscription.billing_mode}
+          forcePaywall={mustSubscribe}
         />
       </div>
     </div>
