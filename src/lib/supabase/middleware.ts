@@ -83,9 +83,14 @@ export async function updateSession(request: NextRequest) {
   if (pathname.startsWith("/dashboard") && user) {
     const { data: business } = await supabase
       .from("businesses")
-      .select("id, is_suspended")
+      .select("id, slug, is_suspended")
       .eq("owner_id", user.id)
       .maybeSingle();
+
+    // The public dashboard demo (shared login, see marketing homepage) is
+    // permanently exempt from the pre-payment gate below — it's meant to
+    // be explored without ever subscribing.
+    const isDemoBusiness = business?.slug === "demo";
 
     // A confirmed user with no business row at all — auto-provisioning
     // either hasn't run yet or failed outright. Without this check every
@@ -101,7 +106,7 @@ export async function updateSession(request: NextRequest) {
       );
     }
 
-    if (business && !isSubscriptionLockExempt) {
+    if (business && !isDemoBusiness && !isSubscriptionLockExempt) {
       const { data: subscription } = await supabase
         .from("business_subscriptions")
         .select("provider, created_at")

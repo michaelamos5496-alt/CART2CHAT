@@ -117,6 +117,17 @@ export function HeroSection() {
           <p className="hero-fine text-muted-foreground text-sm">
             Card and Mobile Money accepted.
           </p>
+          <p className="hero-fine text-muted-foreground text-sm">
+            Curious about the business dashboard too?{" "}
+            <Link
+              href="/login"
+              className="text-foreground font-medium underline underline-offset-2"
+            >
+              Log in
+            </Link>{" "}
+            with <span className="font-medium">demo@cart2chat.com</span> /{" "}
+            <span className="font-medium">Cart2ChatDemo!</span>
+          </p>
         </div>
 
         <HeroMockup />
