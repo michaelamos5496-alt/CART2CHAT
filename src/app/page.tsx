@@ -34,8 +34,8 @@ export default async function Home() {
     operatingSystem: "Web",
     offers: {
       "@type": "Offer",
-      price: "0",
-      priceCurrency: "USD",
+      price: "100",
+      priceCurrency: "GHS",
     },
   };
 

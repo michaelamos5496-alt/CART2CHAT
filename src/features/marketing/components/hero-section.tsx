@@ -108,14 +108,14 @@ export function HeroSection() {
               size="lg"
               variant="outline"
               className="hero-cta"
-              render={<Link href="#how-it-works" />}
+              render={<Link href="/store/demo" target="_blank" />}
             >
-              See how it works
+              Try the live demo
             </Button>
           </div>
 
           <p className="hero-fine text-muted-foreground text-sm">
-            No credit card required to sign up.
+            Card and Mobile Money accepted.
           </p>
         </div>
 

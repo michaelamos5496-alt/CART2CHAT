@@ -42,6 +42,12 @@ export function MarketingHeader() {
 
         <div className="ml-auto hidden items-center gap-2 md:flex">
           <ModeToggle />
+          <Button
+            variant="ghost"
+            render={<Link href="/store/demo" target="_blank" />}
+          >
+            Live demo
+          </Button>
           <Button variant="ghost" render={<Link href="/login" />}>
             Log in
           </Button>
@@ -79,6 +85,12 @@ export function MarketingHeader() {
                 ))}
               </nav>
               <div className="mt-auto grid gap-2 border-t p-4">
+                <Button
+                  variant="outline"
+                  render={<Link href="/store/demo" target="_blank" />}
+                >
+                  Live demo
+                </Button>
                 <Button variant="outline" render={<Link href="/login" />}>
                   Log in
                 </Button>
